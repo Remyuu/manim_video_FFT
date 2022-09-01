@@ -14,6 +14,7 @@
         1、已上传至https://github.com/Remyuu/manim_video_FFT/
         2、test Class改名为 WindingAndFreqdomain
         3、WindingAndFreqdomain的polar图像添加了追踪质点
+        4、整理WindingAndFreqdomain代码
 
 '''
 #拖鞋 挂钩 转换插头
@@ -472,7 +473,8 @@ class ContinuousFourier(Scene):
 
 class WindingAndFreqdomain(Scene):
     def construct(self):
-        def play_change_channel(change_to:int,run_time:float=1):
+        def play_change_channel(change_to:int,run_time:float=1,before_wait:float=0,then_wait:float=0):
+            self.wait(before_wait)
             graph_polar.remove_updater(up_polar_graph)
             dot_freqDomain.remove_updater(up_dot)
             self.__channel__= change_to
@@ -480,7 +482,7 @@ class WindingAndFreqdomain(Scene):
                 Transform(graph_polar,get_pc(set_data['f_set'][change_to],_color=set_data['color_set'][change_to])),#改极坐标
                 Transform(graph_label,set_data['graph_label_set'][self.__channel__]),#改直角坐标图像标签
                 Transform(graph_c,set_data['graph_c_set'][self.__channel__]),#改直角坐标图像
-                Transform(graph_freqD,freqD_axis.plot(get_freqDomain_sample,x_range=[0,15,0.1])),#改freqD图像
+                Transform(graph_freqD,axis_freqD.plot(get_freqDomain_sample,x_range=[0,15,0.1])),#改freqD图像
                 dot_freqDomain.animate.move_to(get_dot_freqDomain(Da.get_value())),#质心点在freqD
                 run_time=run_time#设置动画时间
                 )
@@ -489,6 +491,7 @@ class WindingAndFreqdomain(Scene):
 
             dot_freqDomain.add_updater(up_dot)
             graph_polar.add_updater(up_polar_graph)
+            self.wait(then_wait)
 
         #### Global variables ####
             #意思是现在选中需要扭转与分析的函数是哪一个（为了加updater显示不同颜色
@@ -529,22 +532,22 @@ class WindingAndFreqdomain(Scene):
         }
         #Initilization
             # Cartesian coordinates
-        c_axis = Axes(
+        axis_c = Axes(
             x_range=[0 , second + 0.1 , 1],y_range=[0, 2, 1],
             y_length=2,axis_config={"include_numbers": True},tips=False,
             ).to_edge(UP)
-        c_axis_label = c_axis.get_axis_labels(x_label='time',y_label='intensity')
+        label_axis_c = axis_c.get_axis_labels(x_label='time',y_label='intensity')
         for index,mathtex in enumerate(set_data['tex_set']):
             mathtex.set_color(set_data['color_set'][index]).scale(1.5).shift(UP*2.5)
         set_data['graph_label_set'] = [VGroup(_texf_,BackgroundRectangle(_texf_, color=WHITE, fill_opacity=0.15)) 
                                 for _texf_ in set_data['tex_set']]
 
-        set_data['graph_c_set'] = [c_axis.plot(set_data['f_set'][x],x_range=[0,second,0.01],color=set_data['color_set'][x])
+        set_data['graph_c_set'] = [axis_c.plot(set_data['f_set'][x],x_range=[0,second,0.01],color=set_data['color_set'][x])
                             for x in range(len(set_data['f_set']))]
 
         #### polar ####
         def get_pc(_func,_color=RED):
-            return polar_axis.plot_parametric_curve(
+            return axis_polar.plot_parametric_curve(
                 lambda t: [
                 +np.cos(Da.get_value()*TAU*t) * (_func(t)),
                 -np.sin(Da.get_value()*TAU*t) * (_func(t)),
@@ -553,43 +556,48 @@ class WindingAndFreqdomain(Scene):
         def get_mess_point():
             return Dot(graph_polar.get_center_of_mass())
 
-        polar_axis = PolarPlane(radius_max=1.9,size=4.5).to_edge(DL)
+        axis_polar = PolarPlane(radius_max=1.9,size=4.5).to_edge(DL)
         graph_polar = VMobject().become(get_pc(set_data['f_set'][self.__channel__],set_data['color_set'][self.__channel__]))
         dot_mess = VMobject().become(get_mess_point())
         def up_polar_graph(obj): return obj.become(get_pc(set_data['f_set'][self.__channel__],set_data['color_set'][self.__channel__]))
         def up_mess_point(obj): return obj.become(get_mess_point())
 
         #####freqDomain####
-        t_min = 0;t_max = second
+        t_min = 0
+        t_max = second
         scale = 1 / t_max - t_min
-        freqD_axis = Axes(x_range=[0,15,1],y_range=[-0.1,0.8],
-                x_length=7,y_length=3,
-                axis_config={"include_numbers": True}).next_to(polar_axis,RIGHT).align_to(polar_axis,UP)
-        freqD_axis_label = freqD_axis.get_axis_labels(x_label='freq(TAU)',y_label='')
+        axis_freqD = Axes(x_range=[0, 15, 1], y_range=[-0.1, 0.8],
+                          x_length=7, y_length=3,
+                          axis_config={"include_numbers": True}).next_to(axis_polar, RIGHT).align_to(axis_polar, UP)
+        label_axis_freqD = axis_freqD.get_axis_labels(
+            x_label='freq(TAU)', y_label='')
+
         def get_freqDomain_sample(wind):
             return scale * scipy.integrate.quad(
-                lambda t : set_data['f_set'][self.__channel__](t)*np.exp(complex(0, -TAU*wind*t)),
+                lambda t: set_data['f_set'][self.__channel__](
+                    t)*np.exp(complex(0, -TAU*wind*t)),
                 t_min, t_max
-                )[0].real
+            )[0].real
 
-        graph_freqD = freqD_axis.plot(get_freqDomain_sample,x_range=[0,15,0.1])
-        def get_dot_freqDomain(wind_freq):#'wind_freq'no need to times TAU
-            color=set_data['color_set'][self.__channel__]
-            return Dot(freqD_axis.input_to_graph_point(x=wind_freq,graph=graph_freqD),color=color)
+        graph_freqD = axis_freqD.plot(
+            get_freqDomain_sample, x_range=[0, 15, 0.1])
+
+        def get_dot_freqDomain(wind_freq):  # 'wind_freq'no need to times TAU
+            color = set_data['color_set'][self.__channel__]
+            return Dot(axis_freqD.input_to_graph_point(x=wind_freq, graph=graph_freqD), color=color)
         dot_freqDomain = get_dot_freqDomain(0.1)
         def up_dot(mob): return mob.become(get_dot_freqDomain(Da.get_value()))
         dot_freqDomain.add_updater(up_dot)
 
-
         label_Da = Text('Winding Freq:')
-        group_Da = VGroup(label_Da,Da).arrange(RIGHT).next_to(freqD_axis,DOWN)
+        group_Da = VGroup(label_Da, Da).arrange(RIGHT).next_to(axis_freqD, DOWN)
 
         ###############
         #绘制三个坐标轴
-        self.add(c_axis,polar_axis,freqD_axis,
-                 c_axis_label,freqD_axis_label)
+        self.add(axis_c, axis_polar, axis_freqD,
+                 label_axis_c, label_axis_freqD)
         #绘制初始直角坐标图像
-        self.add(graph_freqD,dot_freqDomain)
+        self.add(graph_freqD, dot_freqDomain)
         #绘制Winding Freq动态数字
         self.add(group_Da)
 
@@ -597,34 +605,36 @@ class WindingAndFreqdomain(Scene):
         #绘制直角坐标的c_g_1 初始的
         graph_c = set_data['graph_c_set'][0].copy()
         graph_label = set_data['graph_label_set'][0].copy()
-        self.play(Create(graph_c),FadeIn(graph_label))
+        self.play(Create(graph_c), FadeIn(graph_label))
 
-        self.play(ReplacementTransform(graph_c.copy(),graph_polar),
-            run_time=3.5,
-            path_arc = -TAU*2/3)
+        self.play(ReplacementTransform(graph_c.copy(), graph_polar),
+                  run_time=3.5,
+                  path_arc=-TAU*2/3)
 
         #添加质点动画
-        self.play(ReplacementTransform(graph_polar.copy(),dot_mess))
+        self.play(ReplacementTransform(graph_polar.copy(), dot_mess))
         graph_polar.add_updater(up_polar_graph)
         dot_mess.add_updater(up_mess_point)
+
         self.wait()
-        self.play(ChangeDecimalToValue(Da,5,run_time=5))
-        self.wait()
-        play_change_channel(1)
-        self.wait()
-        self.play(ChangeDecimalToValue(Da,11,run_time=5))
-        self.wait()
-        play_change_channel(2)
-        self.wait()
-        self.play(ChangeDecimalToValue(Da,8,run_time=5))
-        self.wait()
-        play_change_channel(3)
-        self.wait()
-        self.play(ChangeDecimalToValue(Da,5,run_time=5))
-        self.wait()
-        play_change_channel(4)
-        self.wait()
-        self.play(ChangeDecimalToValue(Da,11,run_time=5))
+
+        self.play(ChangeDecimalToValue(Da, 5, run_time=5))
+
+        play_change_channel(1, before_wait=1, then_wait=1)
+
+        self.play(ChangeDecimalToValue(Da, 11, run_time=5))
+
+        play_change_channel(2, before_wait=1, then_wait=1)
+
+        self.play(ChangeDecimalToValue(Da, 8, run_time=5))
+
+        play_change_channel(3, before_wait=1, then_wait=1)
+
+        self.play(ChangeDecimalToValue(Da, 5, run_time=5))
+
+        play_change_channel(4, before_wait=1, then_wait=1)
+
+        self.play(ChangeDecimalToValue(Da, 11, run_time=5))
 
 
 
