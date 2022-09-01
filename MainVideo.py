@@ -26,11 +26,6 @@ import numpy as np
 import scipy
 import pickle #写出读取打包 序列化二进制list
 
-# 文件都是以二进制的方式储存在硬盘上
-# 那么如果有一个int ：13 存在硬盘，转成二进制即可
-# 如果我们有一个list [1,2,3,4,5]呢 甚至是 ["hello",12,1.11,Dot()]
-# 那么我们就要序列化list 打包好--使用pickle
-# 所有文件都是序列化的，方式不同。我用list写出到文件，我就用list的方式读取，中间过程需要序列化。
 
 #import librosa
 #import pickle
@@ -150,7 +145,7 @@ class Introduction(Scene):
             x_length=(7+1/9)*1.5,
             y_length=2,
         )
-        #http://zhongguose.com/
+
         f_1 = ax.plot(lambda x : np.sin(x)+0.4*np.sin(4*x),x_range=[0 , 10*TAU , 0.1],color='#ed5a65')
         f_1_1 = ax.plot(lambda x : np.sin( x ),x_range=[0 , 10*TAU , 0.1],color='#eea2a4')
         f_1_2 = ax.plot(lambda x : 0.4*np.sin(4*x),x_range=[0 , 10*TAU , 0.1],color='#f1939c')
