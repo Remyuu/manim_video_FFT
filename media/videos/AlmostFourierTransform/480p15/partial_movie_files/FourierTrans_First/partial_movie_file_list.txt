@@ -1,0 +1,6 @@
+# This file is used internally by FFMPEG.
+file 'file:F:/manim/manim-master/project/media/videos/AlmostFourierTransform/480p15/partial_movie_files/FourierTrans_First/3163782288_2671052987_2914451382.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/AlmostFourierTransform/480p15/partial_movie_files/FourierTrans_First/2201830969_1417399956_3511095764.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/AlmostFourierTransform/480p15/partial_movie_files/FourierTrans_First/2201830969_3470458098_1563830196.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/AlmostFourierTransform/480p15/partial_movie_files/FourierTrans_First/2201830969_1417405323_84196220.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/AlmostFourierTransform/480p15/partial_movie_files/FourierTrans_First/2201830969_787211222_2899187934.mp4'

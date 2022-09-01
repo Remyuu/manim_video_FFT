@@ -1,0 +1,2 @@
+# This file is used internally by FFMPEG.
+file 'file:F:/manim/manim-master/project/media/videos/sc1/480p15/partial_movie_files/PlotParametricFunction/3163782288_2981940227_2703653090.mp4'

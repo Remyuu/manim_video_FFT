@@ -1,0 +1,12 @@
+# This file is used internally by FFMPEG.
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/CalculationAndMeanings/3163782288_4191910561_1773193577.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/CalculationAndMeanings/2201830969_4107671849_1773193577.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/CalculationAndMeanings/2201830969_641265786_1773193577.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/CalculationAndMeanings/2201830969_253275881_1773193577.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/CalculationAndMeanings/2201830969_4242966984_1773193577.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/CalculationAndMeanings/2201830969_923148114_1773193577.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/CalculationAndMeanings/2201830969_1007109814_1773193577.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/CalculationAndMeanings/2201830969_3320506438_1773193577.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/CalculationAndMeanings/2201830969_921131448_1773193577.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/CalculationAndMeanings/2201830969_3277205799_1773193577.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/CalculationAndMeanings/2201830969_1150359634_2334220719.mp4'

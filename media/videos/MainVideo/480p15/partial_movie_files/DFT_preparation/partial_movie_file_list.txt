@@ -1,0 +1,7 @@
+# This file is used internally by FFMPEG.
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/DFT_preparation/3163782288_2440233369_223132457.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/DFT_preparation/2201830969_3837998516_866120123.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/DFT_preparation/2201830969_3402312173_2978523085.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/DFT_preparation/2201830969_3837998516_1863511228.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/DFT_preparation/2201830969_2279135872_1088573702.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/DFT_preparation/2201830969_3837998516_1603417325.mp4'

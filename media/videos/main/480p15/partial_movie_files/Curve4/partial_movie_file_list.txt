@@ -1,0 +1,6 @@
+# This file is used internally by FFMPEG.
+file 'file:F:/manim/manim-master/project/media/videos/main/480p15/partial_movie_files/Curve4/3163782288_2186901407_223132457.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/main/480p15/partial_movie_files/Curve4/2201830969_1953720634_3182216801.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/main/480p15/partial_movie_files/Curve4/2201830969_2667556442_2472585209.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/main/480p15/partial_movie_files/Curve4/2201830969_3473534202_1313768846.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/main/480p15/partial_movie_files/Curve4/2201830969_3473534202_508096527.mp4'

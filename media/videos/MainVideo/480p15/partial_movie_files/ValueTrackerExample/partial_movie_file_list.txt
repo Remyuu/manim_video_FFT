@@ -1,0 +1,8 @@
+# This file is used internally by FFMPEG.
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/ValueTrackerExample/3163782288_1329314881_3571260530.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/ValueTrackerExample/2201830969_645682970_2446729395.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/ValueTrackerExample/2201830969_751330312_2502334191.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/ValueTrackerExample/2201830969_645682970_4064841940.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/ValueTrackerExample/2201830969_3186201278_3016690495.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/ValueTrackerExample/2201830969_2115670016_3431636085.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/ValueTrackerExample/2201830969_645682970_4226479661.mp4'

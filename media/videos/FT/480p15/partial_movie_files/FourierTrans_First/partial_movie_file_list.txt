@@ -1,0 +1,8 @@
+# This file is used internally by FFMPEG.
+file 'file:F:/manim/manim-master/project/media/videos/FT/480p15/partial_movie_files/FourierTrans_First/3163782288_2576476134_4279640231.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/FT/480p15/partial_movie_files/FourierTrans_First/2201830969_2036254433_4235660963.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/FT/480p15/partial_movie_files/FourierTrans_First/2201830969_302667044_1979856988.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/FT/480p15/partial_movie_files/FourierTrans_First/2201830969_3515939466_1307418343.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/FT/480p15/partial_movie_files/FourierTrans_First/2201830969_4062074891_1888281004.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/FT/480p15/partial_movie_files/FourierTrans_First/2201830969_3863938746_629404867.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/FT/480p15/partial_movie_files/FourierTrans_First/2201830969_787211222_2863890023.mp4'

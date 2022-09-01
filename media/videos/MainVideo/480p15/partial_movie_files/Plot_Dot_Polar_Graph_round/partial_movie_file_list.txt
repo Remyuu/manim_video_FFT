@@ -1,0 +1,3 @@
+# This file is used internally by FFMPEG.
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/Plot_Dot_Polar_Graph_round/3163782288_3311902360_1330787592.mp4'
+file 'file:F:/manim/manim-master/project/media/videos/MainVideo/480p15/partial_movie_files/Plot_Dot_Polar_Graph_round/2201830969_1224169998_1510690251.mp4'
