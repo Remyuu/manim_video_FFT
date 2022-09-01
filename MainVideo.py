@@ -12,6 +12,8 @@
         1、完成多公式多轨道切换图像
     9.1
         1、已上传至https://github.com/Remyuu/manim_video_FFT/
+        2、test Class改名为 WindingAndFreqdomain
+        3、WindingAndFreqdomain的polar图像添加了追踪质点
 
 '''
 #拖鞋 挂钩 转换插头
@@ -24,6 +26,7 @@ from manim import *
 import librosa
 import numpy as np
 import scipy
+import colour
 import pickle #写出读取打包 序列化二进制list
 
 
@@ -276,7 +279,6 @@ class ContinuousFourier(Scene):
         
         text1 = Tex('Fourier Transform')
 
-
         # Cartesian coordinates
         c_axis = Axes(
             x_range=[0 , second + 0.1 , 1],
@@ -320,7 +322,7 @@ class ContinuousFourier(Scene):
         updot = lambda obj : obj.move_to(polar_graph.get_center_of_mass()).set_color(BLUE)
         CoM.add_updater(updot)
         
-#################### Progress Bar #########################
+        #################### Progress Bar #########################
         number_line = NumberLine(x_range=[0,1,0.5],length=2,include_numbers=True).next_to(formula1,DOWN).shift(DOWN*2)
         tracker = ValueTracker(0)
         pointer = Vector(DOWN).scale(0.5).next_to(
@@ -367,18 +369,16 @@ class ContinuousFourier(Scene):
         #number t and its updater
         t = DecimalNumber(tracker.get_value()).next_to(label,RIGHT)
         t.add_updater(lambda obj : obj.become(DecimalNumber(tracker.get_value())).next_to(label,RIGHT))
-######################### Progress Bar ##################################
+        ######################### Progress Bar ##################################
 
         #######freqDomain
 
         
 
-###需要优化###
-    #锚点逐个显示，优化性能
-    #2022.8.30
-###------###
-
-
+        ###需要优化###
+            #锚点逐个显示，优化性能
+            #2022.8.30
+        ###------###
 
 
         ########################################################
@@ -464,14 +464,13 @@ class ContinuousFourier(Scene):
         self.wait()
         self.play(ChangeDecimalToValue(Da,32),ChangeDecimalToValue(Dk,5.09),rate_func=rate_functions.linear,run_time=20)
         self.wait()
-
         # explanation on why there is peaks at frequency 5
             # Audio text: The reason behind might be that at this winding frequency, every period of f are just wound in one full circle, so we can gather all the peaks of f(t) on the right of the graph. Therefore by tracing the positon of CoM, we get feedback on whether the current k is similar to the true frequency of f. We are able to reveal the unknown frequencies of f(t) by looking at the position of CoM, with this mathematical wounding machine.
 
         # change f and see the polar
-        #self.play(ReplacementTransform(polar_graph,polar_graph_new))
+            #self.play(ReplacementTransform(polar_graph,polar_graph_new))
 
-class test(Scene):
+class WindingAndFreqdomain(Scene):
     def construct(self):
         def play_change_channel(change_to:int,run_time:float=1):
             graph_polar.remove_updater(up_polar_graph)
@@ -506,6 +505,7 @@ class test(Scene):
             lambda x: y_scale*(np.cos(f1_lambda*TAU*x)+0.5*np.cos(f2_lambda*TAU*x)+1.5),
             lambda x: y_scale*(np.cos(f1_lambda*TAU*x)+0.5*np.cos(f3_lambda*TAU*x)+1.5),
             lambda x: y_scale*(np.cos(f1_lambda*TAU*x)+np.cos(f3_lambda*TAU*x)+2),
+#
         ],
         'color_set':[
             YELLOW_A,
@@ -542,28 +542,22 @@ class test(Scene):
         set_data['graph_c_set'] = [c_axis.plot(set_data['f_set'][x],x_range=[0,second,0.01],color=set_data['color_set'][x])
                             for x in range(len(set_data['f_set']))]
 
-
-
         #### polar ####
-        polar_axis = PolarPlane(radius_max=1.9,size=4.5).to_edge(DL)
-        graph_polar = polar_axis.plot_parametric_curve(
-            lambda t : [
-                +np.cos(Da.get_value()*TAU*t) * (set_data['f_set'][0](t)),
-                -np.sin(Da.get_value()*TAU*t) * (set_data['f_set'][0](t)),
-                0
-            ],t_range=[0,second,0.01],color=set_data['color_set'][0]
-            ) 
         def get_pc(_func,_color=RED):
             return polar_axis.plot_parametric_curve(
                 lambda t: [
                 +np.cos(Da.get_value()*TAU*t) * (_func(t)),
                 -np.sin(Da.get_value()*TAU*t) * (_func(t)),
                 0
-            ], t_range=[0, second, 0.01], color=_color)
+            ], t_range=[0, second, 0.01], color=_color,stroke_width=0.5)
+        def get_mess_point():
+            return Dot(graph_polar.get_center_of_mass())
 
+        polar_axis = PolarPlane(radius_max=1.9,size=4.5).to_edge(DL)
+        graph_polar = VMobject().become(get_pc(set_data['f_set'][self.__channel__],set_data['color_set'][self.__channel__]))
+        dot_mess = VMobject().become(get_mess_point())
         def up_polar_graph(obj): return obj.become(get_pc(set_data['f_set'][self.__channel__],set_data['color_set'][self.__channel__]))
-
-        graph_polar.add_updater(up_polar_graph)
+        def up_mess_point(obj): return obj.become(get_mess_point())
 
         #####freqDomain####
         t_min = 0;t_max = second
@@ -609,6 +603,10 @@ class test(Scene):
             run_time=3.5,
             path_arc = -TAU*2/3)
 
+        #添加质点动画
+        self.play(ReplacementTransform(graph_polar.copy(),dot_mess))
+        graph_polar.add_updater(up_polar_graph)
+        dot_mess.add_updater(up_mess_point)
         self.wait()
         self.play(ChangeDecimalToValue(Da,5,run_time=5))
         self.wait()
@@ -627,7 +625,6 @@ class test(Scene):
         play_change_channel(4)
         self.wait()
         self.play(ChangeDecimalToValue(Da,11,run_time=5))
-
 
 
 
