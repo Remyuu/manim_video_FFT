@@ -11,8 +11,7 @@
     8.31
         1、完成多公式多轨道切换图像
     9.1
-        1、
- 
+        1、已上传至https://github.com/Remyuu/manim_video_FFT/
 
 '''
 #拖鞋 挂钩 转换插头
