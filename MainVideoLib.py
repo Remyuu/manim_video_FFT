@@ -4,6 +4,8 @@
     8.24
         优化Freq_Domain_Curve代码,提高渲染效率、渲染曲线更平滑。
         更新Freq_Domain_Curve,添加了区域标识。
+    9.2
+        增加了加hanning窗的动画
 
 
 此工程使用manimlib
@@ -229,20 +231,63 @@ class show_hanning_windows(Scene):
         graph.set_points_as_corners(vertices)
         if show_dot:
             vertex_dots = VGroup(*(
-                    Dot(point=vertex, radius=0.02)
+                    Dot(point=vertex, radius=0.02, color=RED)
                     for vertex in vertices))
             return [graph,vertex_dots]
         return [graph]
 
     def construct(self):
-        f_size = 1024
-        ax = Axes(
+        text_intro = Title('hanning~times~to~timedomain')
+
+        f_size = 128
+        ax1 = Axes(
             x_range=[0, f_size, f_size/4],
             y_range=[0, 1, 0.5],
             axis_config={"include_numbers": True},
         )
-        graph ,dot_set= self.plot(range(f_size),np.hanning(f_size),ax,show_dot=True)
+        ax2 = Axes(
+            x_range=[0, f_size, f_size/4],
+            y_range=[0, 1, 0.5],
+            axis_config={"include_numbers": True},
+        )
+        vg = VGroup(ax1,ax2).arrange(DOWN)
+        graph, dot_set = self.plot(
+            range(f_size), np.hanning(f_size), ax1, show_dot=True)
+
+        yy44,fs44 = librosa.load('wav_dir/winter.wav')
+        sample=yy44[10000:10000+f_size]
+        _,real_dot_set = self.plot(
+            range(f_size),sample,ax1
+        )
+
+        _,real_fft_dot = self.plot(
+            range(f_size),sample * np.hanning(f_size),ax
+        )
+
+        _,fft_dot = self.plot(
+            range(f_size),scipy.fft.fft(sample * np.hanning(f_size)),ax
+        )
         self.play(FadeIn(ax))
-        self.play(Write(graph),Write(dot_set))
+
+        self.play(Write(text_intro))
+        self.play(FadeOut(text_intro))
+
+        self.play(Write(dot_set))
+        self.play(FadeOut(dot_set))
+
+        self.play(Write(real_dot_set))
+        self.play(FadeOut(real_dot_set))
+
+        self.play(Write(real_fft_dot))
+        # self.play(FadeOut(real_fft_dot))
+
+        # self.play(Write(fft_dot))
+        # self.play(FadeOut(fft_dot))
+
+
+
+
+
+
 
         
