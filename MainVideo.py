@@ -15,6 +15,8 @@
         2、test Class改名为 WindingAndFreqdomain
         3、WindingAndFreqdomain的polar图像添加了追踪质点
         4、整理WindingAndFreqdomain代码
+    9.2
+        1、
 
 '''
 #拖鞋 挂钩 转换插头
@@ -136,7 +138,6 @@ class Introduction(Scene):
     def __init__(self, renderer=None, camera_class=..., always_update_mobjects=False, random_seed=None, skip_animations=False):
         super().__init__(renderer, camera_class, always_update_mobjects, random_seed, skip_animations)
 
-
     def construct(self):
         self.Introduction_Scene()
         self.Do_it_yourself()
@@ -144,26 +145,26 @@ class Introduction(Scene):
 
     def Introduction_Scene(self):
         ax = Axes(
-            x_range=[0 , 10*TAU , TAU],
-            y_range=[-1, 1.1, 0.5],
-            x_length=(7+1/9)*1.5,
-            y_length=2,
+            x_range=[0 , 10*TAU , TAU],y_range=[-1, 1.1, 0.5],
+            x_length=(7+1/9)*1.5,y_length=2,
         )
-
-        f_1 = ax.plot(lambda x : np.sin(x)+0.4*np.sin(4*x),x_range=[0 , 10*TAU , 0.1],color='#ed5a65')
-        f_1_1 = ax.plot(lambda x : np.sin( x ),x_range=[0 , 10*TAU , 0.1],color='#eea2a4')
-        f_1_2 = ax.plot(lambda x : 0.4*np.sin(4*x),x_range=[0 , 10*TAU , 0.1],color='#f1939c')
-        Tex_1 = MathTex("f(x)=f_{1}(x)+f_{2}(x)",color='#ed5a65').scale(2)
-        Tex_1_1 = MathTex(r"f_{1}(x)=?\sin(?x)",color='#eea2a4').scale(2)
-        Tex_1_2 = MathTex(r"f_{2}(x)=?\sin(?x)",color='#f1939c').scale(2)
+        COLOR_1:str = '#ed5a65'
+        COLOR_2:str = '#eea2a4'
+        COLOR_3:str = '#f1939c'
+        f_1 = ax.plot(lambda x : np.sin(x)+0.4*np.sin(4*x),x_range=[0 , 10*TAU , 0.1],color=COLOR_1)
+        f_1_1 = ax.plot(lambda x : np.sin( x ),x_range=[0 , 10*TAU , 0.1],color=COLOR_2)
+        f_1_2 = ax.plot(lambda x : 0.4*np.sin(4*x),x_range=[0 , 10*TAU , 0.1],color=COLOR_3)
+        Tex_1 = MathTex("f(x)=f_{1}(x)+f_{2}(x)",color=COLOR_1).scale(2)
+        Tex_1_1 = MathTex(r"f_{1}(x)=?\sin(?x)",color=COLOR_2).scale(2)
+        Tex_1_2 = MathTex(r"f_{2}(x)=?\sin(?x)",color=COLOR_3).scale(2)
         scene_group=VGroup(f_1,f_1_1,f_1_2,Tex_1,Tex_1_1,Tex_1_2)
 
-        sm = SVGMobject("sound_icon_intro_0.svg")
-        self.play(Write(sm),run_time=0.5)
-        self.play(Wiggle(sm,rotation_angle=0.03*TAU),run_time=1.5)
+        svg_sound = SVGMobject("sound_icon_intro_0.svg")
+        self.play(Write(svg_sound),run_time=0.5)
+        self.play(Wiggle(svg_sound,rotation_angle=0.03*TAU),run_time=1.5)
 
         
-        self.play(ReplacementTransform(sm,f_1),run_time=1.5)
+        self.play(ReplacementTransform(svg_sound,f_1),run_time=1.5)
         self.play(f_1.animate.to_edge(UP*2))
 
         f_1_1.next_to(f_1,DOWN)
@@ -185,10 +186,8 @@ class Introduction(Scene):
     def Do_it_yourself(self):
         t_min = 0 ; t_max = 6*TAU ; t_dt=0.01
         ax = Axes(
-            x_range=[t_min , t_max +TAU , TAU],
-            y_range=[-2.5, 2.5, 1],
-            x_length=(7+1/9)*1.5,
-            y_length=3,
+            x_range=[t_min , t_max +TAU , TAU],y_range=[-2.5, 2.5, 1],
+            x_length=(7+1/9)*1.5,y_length=3,
         ).shift(DOWN)
         text0 = Text(r'We try to build the sound ourselves',t2c={"sound":'#ed5a65'})
 
@@ -213,7 +212,6 @@ class Introduction(Scene):
             'that adding periodic functions together looks like a wave in a wave.',
             font_size=36,
             color=BLUE).to_edge(UP)
-
 
         self.play(Write(text0))
         self.wait()
@@ -282,10 +280,8 @@ class ContinuousFourier(Scene):
 
         # Cartesian coordinates
         c_axis = Axes(
-            x_range=[0 , second + 0.1 , 1],
-            y_range=[0, 1.1, 1],
-            x_length=(7+1/9)*2*1.8,
-            y_length=4*3/4,
+            x_range=[0 , second + 0.1 , 1],y_range=[0, 1.1, 1],
+            x_length=(7+1/9)*2*1.8,y_length=4*3/4,
             axis_config={"include_numbers": True},
         ).scale(0.5).to_edge(UP)
         c_graph = c_axis.plot(f,x_range=[0,second,0.01],color=YELLOW)
@@ -305,8 +301,8 @@ class ContinuousFourier(Scene):
         
         # CoM
         com = polar_graph.get_center_of_mass() # -> narray
-        CoM = Dot()
-        CoM.move_to(com).set_color(BLUE)
+        dot_CoM = Dot()
+        dot_CoM.move_to(com).set_color(BLUE)
 
         # upfunc
         upfunc = lambda obj : obj.become(polar_axis.plot_parametric_curve(
@@ -321,7 +317,7 @@ class ContinuousFourier(Scene):
         polar_graph.add_updater(upfunc)
         # dot
         updot = lambda obj : obj.move_to(polar_graph.get_center_of_mass()).set_color(BLUE)
-        CoM.add_updater(updot)
+        dot_CoM.add_updater(updot)
         
         #################### Progress Bar #########################
         number_line = NumberLine(x_range=[0,1,0.5],length=2,include_numbers=True).next_to(formula1,DOWN).shift(DOWN*2)
@@ -452,7 +448,7 @@ class ContinuousFourier(Scene):
         self.wait() 
         self.play(Circumscribe(formula2[0]))
         self.wait() 
-        self.play(ReplacementTransform(polar_graph.copy(),CoM))        
+        self.play(ReplacementTransform(polar_graph.copy(),dot_CoM))        
         self.wait() 
         formula_group1.next_to(formula_group2,RIGHT)
         self.play(FadeOut(formula_group2))
@@ -552,7 +548,7 @@ class WindingAndFreqdomain(Scene):
                 +np.cos(Da.get_value()*TAU*t) * (_func(t)),
                 -np.sin(Da.get_value()*TAU*t) * (_func(t)),
                 0
-            ], t_range=[0, second, 0.01], color=_color,stroke_width=0.5)
+            ], t_range=[0, second, 0.01], color=_color,stroke_width=2)
         def get_mess_point():
             return Dot(graph_polar.get_center_of_mass())
 
@@ -634,7 +630,7 @@ class WindingAndFreqdomain(Scene):
 
         play_change_channel(4, before_wait=1, then_wait=1)
 
-        self.play(ChangeDecimalToValue(Da, 11, run_time=5))
+        self.play(ChangeDecimalToValue(Da, 8, run_time=5))
 
 
 
@@ -650,33 +646,31 @@ class DFT_preparation(Scene):
         y_scale = 0.5
         f = lambda x: y_scale*np.cos(30 * x)+y_scale
         ax = Axes(
-            x_range=[0 , second , 1],
-            y_range=[0, 1.1, 1],
-            x_length=(7+1/9)*2*1.8,
-            y_length=4*3/4,
+            x_range=[0, second, 1], y_range=[0, 1.1, 1],
+            x_length=(7+1/9)*2*1.8, y_length=4*3/4,
             axis_config={"include_numbers": True},
         ).to_edge(DOWN)
-        wave = ax.plot(f,color=YELLOW)
-        group = VGroup(ax,wave).scale(0.5)
+        wave = ax.plot(f, color=YELLOW)
+        group = VGroup(ax, wave).scale(0.5)
         ########################################################
         #                   Start Animation                    #
         ########################################################
 
         self.play(FadeIn(tex))
         self.wait()
-        self.play(tex.animate.to_edge(UL),FadeIn(formula))
+        self.play(tex.animate.to_edge(UL), FadeIn(formula))
         self.wait()
-        self.play(FadeOut(formula),FadeIn(group))
+        self.play(FadeOut(formula), FadeIn(group))
         self.wait()
 
 
 class PlotDots(Scene):
-    def Create_Dot_Set(self,axes,sample,Vg,run_time=1):
+    def Create_Dot_Set(self, axes, sample, Vg, run_time=1):
         dots_set = []
         _len_sample = int(len(sample))
         for x in range(_len_sample):
-            dots_set.append(Dot(radius=0.02,color=BLUE_A,fill_opacity=0.8))
-            dots_set[x].move_to(axes.c2p(x,sample[x]))
+            dots_set.append(Dot(radius=0.02, color=BLUE_A, fill_opacity=0.8))
+            dots_set[x].move_to(axes.c2p(x, sample[x]))
             self.add(dots_set[x])
             Vg.add(dots_set[x])
         return dots_set
@@ -685,39 +679,40 @@ class PlotDots(Scene):
         ########################################################
         #                     GET SAMPLE                       #
         ########################################################
-        sample,_abs_big_ = sample_set.get_winter_wav()
+        sample, _abs_big_ = sample_set.get_winter_wav()
         windows_dot_num = 2048
         shift = 10000
 
-        sample_part=sample[shift:shift+windows_dot_num]
-        _big_ = max([abs(max(list(sample_part))),abs(min(list(sample_part)))])
+        sample_part = sample[shift:shift+windows_dot_num]
+        _big_ = max([abs(max(list(sample_part))), abs(min(list(sample_part)))])
         
-        
-        print("样本点总数量:"+str(len(sample))+"\n当前节选样本区域:"+str(shift)+","+str(shift+windows_dot_num))
+        print("样本点总数量:"+str(len(sample))+"\n当前节选样本区域:"+ \
+              str(shift)+","+str(shift+windows_dot_num))
 
         #### manim_graph ####
-        axes = Axes(x_range=(0,windows_dot_num+1,512),
-                y_range=(-_big_,_big_,round((_big_)/2,2)),
-                axis_config={"include_numbers": True},)
+        axes = Axes(x_range=(0, windows_dot_num+1, 512),
+                    y_range=(-_big_, _big_, round((_big_)/2, 2)),
+                    axis_config={"include_numbers": True},)
         #np.hanning(windows_dot_num)
 
         ax_TOTAL = VGroup(axes)
-        dots_set = self.Create_Dot_Set(axes,sample_part,ax_TOTAL,run_time=1)
+        dots_set = self.Create_Dot_Set(axes, sample_part, ax_TOTAL, run_time=1)
 
         formula_004 = formula_set.formula_004.to_edge(LEFT).scale(0.5)
         
         ########################################################
         #                   Start Animation                    #
         ########################################################
-        self.add(axes)#Add coordinates()
-        self.play(Write(formula_004),ax_TOTAL.animate.next_to(formula_004,RIGHT))
-        _tc = 0 #temp Int_counter
-        _ts=[] #temp Animation_set
+        self.add(axes)  # Add coordinates()
+        self.play(Write(formula_004),
+                  ax_TOTAL.animate.next_to(formula_004, RIGHT))
+        _tc = 0  # temp Int_counter
+        _ts = []  # temp Animation_set
         for dot in dots_set:
             if _tc <= 9 * 2:
-                _ts.append(Transform(dot,formula_004[0][18+_tc:20+_tc]))
-            _tc = _tc +2
-        self.play(*_ts,run_time=3)
+                _ts.append(Transform(dot, formula_004[0][18+_tc:20+_tc]))
+            _tc = _tc + 2
+        self.play(*_ts, run_time=3)
         self.wait()
 
 

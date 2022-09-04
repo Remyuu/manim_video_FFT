@@ -9,7 +9,7 @@ from scipy import signal
 from IPython.display import HTML
 import scipy
 
-yy44,fs44 = librosa.load('Example01_BreakAndColumn.wav',sr=None)
+yy44,fs44 = librosa.load('ECES-434-main/ECES-434-main/003.wav',sr=None)
 ipd.Audio(yy44,rate=fs44)
 
 t = np.arange(len(yy44)) / fs44
@@ -34,13 +34,13 @@ plt.show()
 ########################
 
 
-yy11,fs11 = librosa.load(  'Example01_BreakAndColumn.wav',sr=None)
+yy11,fs11 = librosa.load(r'ECES-434-main/ECES-434-main/003.wav',sr=None)
 ipd.Audio(yy11,rate=fs11)
 
 def plotSpectrogram(sig, fs, win='hann', nseg=512, olap=256, fft_len=512):
   f1, t1, Sxx = signal.spectrogram(sig, fs, window=win, nperseg=nseg, noverlap=olap, nfft=fft_len)
 
-  fig = plt.figure(figsize=(16,6))
+  plt.figure(figsize=(16,6))
 
   plt.pcolormesh(t1, f1, 20*np.log10(np.abs(Sxx)))
   plt.ylabel('Frequency (Hz)')
