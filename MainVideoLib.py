@@ -209,6 +209,7 @@ class OutPutFFTClip(Scene):
                 )
             label_g.arrange(DOWN,buff=0.2)
             return label_g
+
         up_graph = lambda mob: mob.become(get_freqDomain()[0])
         up_label = lambda mob :mob.become(get_label())
 
@@ -217,8 +218,8 @@ class OutPutFFTClip(Scene):
         
         self.play(ChangeDecimalToValue(Dmove_step,_MAX_SAFE_STEP),
                 UpdateFromFunc(Dmove_step,up_graph),
-                UpdateFromFunc(lab, up_label)
-                ,run_time=_SONG_TIME,rate_func=linear)
+                UpdateFromFunc(lab, up_label),
+                run_time=_SONG_TIME,rate_func=linear)
 
 class show_hanning_windows(Scene):
     def plot(self,x_value,y_value,ax,show_dot=True):
@@ -237,8 +238,6 @@ class show_hanning_windows(Scene):
         return [graph]
 
     def construct(self):
-        text_intro = Title('hanning~times~to~timedomain')
-
         f_size = 128
         ax1 = Axes(
             x_range=[0, f_size, f_size/4],
@@ -261,16 +260,14 @@ class show_hanning_windows(Scene):
         )
 
         _,real_fft_dot = self.plot(
-            range(f_size),sample * np.hanning(f_size),ax
+            range(f_size),sample * np.hanning(f_size),ax1
         )
 
         _,fft_dot = self.plot(
-            range(f_size),scipy.fft.fft(sample * np.hanning(f_size)),ax
+            range(f_size),scipy.fft.fft(sample * np.hanning(f_size)),ax1
         )
-        self.play(FadeIn(ax))
+        self.play(FadeIn(ax1))
 
-        self.play(Write(text_intro))
-        self.play(FadeOut(text_intro))
 
         self.play(Write(dot_set))
         self.play(FadeOut(dot_set))

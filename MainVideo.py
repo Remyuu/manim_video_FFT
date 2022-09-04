@@ -839,7 +839,7 @@ class DFT_RealData(Scene):
         graph_total = VGroup(polar_axis)
 
         polar_data = self.Create_DotSet_Polar(polar_axis, sample_part,graph_total)
-        
+        ###
         ########################################################
         #                  Start Animation                     #
         ########################################################
