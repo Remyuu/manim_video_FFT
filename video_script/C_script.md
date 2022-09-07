@@ -66,12 +66,12 @@ We first focus on the two terms inside.
 Leaves only f(t)e^.., move to RIGHT.
 Meanwhile, show the two coordinate system.
 ```
-The f(t) is just our original sound function. t is time. For explanation, we look at one note first, i.e. a single sine or cosine wave. 
+The f(t) is just our sound to be handled, where t is time. For a simpler explanation, we look at one note first, i.e. a single sine or cosine wave. ==↓==
 ```
 circumscribe f(t)
 f(t)->wave on cartessian coordinate
 ```
-But also note that we would like to shift our function up a little bit, just to make things simpler.
+But also note that we would like to shift our function up a little bit, just a minor detail to make things simpler.
 ```
 f(t) shift up by 1.
 ```
@@ -98,16 +98,16 @@ Or it can also be interpreted as if we wound up the f(t) around on the plane as 
 ```
 wound up animation
 ```
-
+==↑==
 Now coming back to our Fourier formula.
 ```
 Add the integral sign on f(t)e^.. to complete the formula.
 ```
-This simply meams finding the *Center of Mass* of the wound-up version of graph.
+This simply meams finding some *Center of Mass* of the wound-up graph.
 ```
 circumscribe the whole formula, meanwhile, show the CoM.
 ```
-So for different k, we may get different CoM.
+So as we change our winding frequency, i.e. for different k, we may get different CoM.
 ```
 Change k animation, slowly
 ```
@@ -115,9 +115,15 @@ We may record and draw the distance of CoM from the y axis.
 ```
 Show, draw frequency domain graph.
 ```
-The important thing is that, when we wound the graph in a frequency that is just the true frequency of the original wave, the CoM will be far away from y axis.
+Note here that we may say the different frequency of winding, corresponds to stretching the sound f(t). This can be seen both from our eyes or from the formula.
 ```
-k have moved to the spike value now.
+stretching f(t), add to channel
+```
+
+It looks like the CoM is always at the origin as the graph behind has some kind of symmetry.
+But the important thing is that, when we wound the graph in a frequency that is just the true frequency of the original wave, the CoM will be far away from y axis.
+```
+k have moved to the peak value now.
 ```
 
 The reason behind might be that at this winding frequency, every period of f are just wound in one full circle, so we can gather all the peaks of f(t) on the right of the graph. Therefore by tracing the positon of CoM, we get feedback on whether the current k is similar to the true frequency of f. We are able to reveal the unknown frequencies of f(t) by looking at the position of CoM, with this mathematical wounding machine.

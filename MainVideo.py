@@ -15,8 +15,8 @@
         2、test Class改名为 WindingAndFreqdomain
         3、WindingAndFreqdomain的polar图像添加了追踪质点
         4、整理WindingAndFreqdomain代码
-    9.2
-        1、
+    9.4
+        1、解决连续傅立叶中点动线动的问题 下午@咖啡厅
 
 '''
 #拖鞋 挂钩 转换插头
@@ -258,43 +258,70 @@ class ContinuousFourier(Scene):
         y_scale = 0.5
         a = TAU/second * 0.4
         k = 0.4
-        Da = DecimalNumber(a).shift(DOWN*2)
-        Dk = DecimalNumber(k,num_decimal_places=2)
-        
+        Da = DecimalNumber(a,num_decimal_places=2).shift(DOWN*2).move_to(LEFT*10)
+        Dk = DecimalNumber(k,num_decimal_places=2).move_to(LEFT*10)
+
         # function f
         f = lambda x: y_scale*(np.cos(5*2*PI*x)+1)
 
         # formulas & text
         formula0 = formula_set.formula_01[0]
         formula1 = formula_set.formula_01[1].next_to(ORIGIN,RIGHT)
-        formula2 = formula_set.formula_01[2].move_to(formula1)
-        formula3 = MathTex(r'2\pi \times').next_to(formula2,DOWN)
-        formula4 = MathTex(r'=')
+        formula2 = formula_set.formula_01[2].to_edge(RIGHT)
+        #formula3 = MathTex(r'2\pi \times').next_to(formula2,DOWN)
+        #formula4 = MathTex(r'=')
         formula5 = MathTex(r'k=0.4')
-        
         text3 = MathTex(r'radius')
-        formula_group1 = VGroup(formula3,Dk,formula4,Da,text3).arrange(RIGHT,aligned_edge=DOWN,buff=0.1)
-        formula_group2 = VGroup(formula5).arrange(RIGHT,aligned_edge=DOWN,buff=0.1).shift(DOWN*3).shift(LEFT)
+        #
+        #line = Square()       
+        ##Let the line rotate 90° per second        
+        #line.add_updater(lambda mobject, dt: mobject.rotate(dt*90*DEGREES))        
+        #self.add(line)       
+        #self.wait(2)
+
+
+        def get_f3():
+            return MathTex(r"2\pi \times",' {0} = {1}'.format(
+                        str(round(Dk.get_value(),1)),str(round(Da.get_value(),1)) ))
+        formula3 =  get_f3()
+        formula3.add_updater(lambda obj : obj.become(get_f3()).to_edge(RIGHT))
         
+        formula_group1 = VGroup(formula3,text3).arrange(RIGHT,aligned_edge=DOWN,buff=0.1)
+        #formula_group1 = VGroup(formula3,Dk,formula4,Da,text3).arrange(RIGHT,aligned_edge=DOWN,buff=0.1)
+        formula_group2 = VGroup(formula5).arrange(RIGHT,aligned_edge=DOWN,buff=0.1).shift(DOWN*3).shift(LEFT)
+
         text1 = Tex('Fourier Transform')
 
         # Cartesian coordinates
+        #c_axis = Axes(
+        #    x_range=[0 , second + 0.1 , 1],y_range=[0, 1.1, 1],
+        #    x_length=(7+1/9)*2*1.8,y_length=4*3/4,
+        #    axis_config={"include_numbers": True},
+        #).scale(0.5).to_edge(UP)
         c_axis = Axes(
-            x_range=[0 , second + 0.1 , 1],y_range=[0, 1.1, 1],
-            x_length=(7+1/9)*2*1.8,y_length=4*3/4,
-            axis_config={"include_numbers": True},
-        ).scale(0.5).to_edge(UP)
-        c_graph = c_axis.plot(f,x_range=[0,second,0.01],color=YELLOW)
-
-        axis_label = c_axis.get_axis_labels()
-        # polar
-        polar_axis = PolarPlane(radius_max=1,size=5)
+            x_range=[0 , second + 0.1 , 1],y_range=[0, 1.5, 1],
+            y_length=2,axis_config={"include_numbers": True},tips=False,
+            ).to_edge(UP)
+        axis_label = c_axis.get_axis_labels(x_label='time',y_label='intensity')
+        c_graph = c_axis.plot(f,x_range=[0,second,0.01],color=TEAL_E)
+       
+        # polar coordinates
+        polar_axis = PolarPlane(radius_max=1,size=4,azimuth_step = 10,
+            fill_opacity=0.5,
+            azimuth_direction='CW',
+            azimuth_label_font_size=36,
+            azimuth_units="PI radians",
+            background_line_style = {
+            "stroke_color": ORANGE,
+            "stroke_width": 2,
+            "stroke_opacity": 0.5,
+        }).add_coordinates()
         polar_graph = polar_axis.plot_parametric_curve(
             lambda t : [
                 +np.cos(a*t) * (f(t)),
                 -np.sin(a*t) * (f(t)),
                 0
-            ],t_range=[0,second,0.01],color=YELLOW
+            ],t_range=[0,second,0.01],color=TEAL_E
         )
         polar_group = VGroup(polar_axis,polar_graph)
         polar_group.to_edge(DL)
@@ -302,21 +329,30 @@ class ContinuousFourier(Scene):
         # CoM
         com = polar_graph.get_center_of_mass() # -> narray
         dot_CoM = Dot()
-        dot_CoM.move_to(com).set_color(BLUE)
+        dot_CoM.move_to(com).set_color(YELLOW)
+
+        pointer_CoM = Vector(DL).scale(0.5).next_to(dot_CoM,UR)
+        pointer_label_CoM = Tex("Center of Mass").next_to(pointer_CoM, UP)
+        pointer_label_CoM.add_updater(lambda m: m.next_to(pointer_CoM, UP))       
+        pointer_CoM.add_updater(
+            lambda m: m.next_to(dot_CoM,UR)
+        )
+        IndicateCoM = VGroup(pointer_CoM,pointer_label_CoM)
+
 
         # upfunc
-        upfunc = lambda obj : obj.become(polar_axis.plot_parametric_curve(
+        upfunc_polar = lambda obj : obj.become(polar_axis.plot_parametric_curve(
             lambda t : [
                 +np.cos(Da.get_value()*t) * (f(t)),
                 -np.sin(Da.get_value()*t) * (f(t)),
                 0
             ],
             t_range=[0,second,0.01],
-            color=YELLOW
+            color=TEAL_E
         ))
-        polar_graph.add_updater(upfunc)
+        polar_graph.add_updater(upfunc_polar)
         # dot
-        updot = lambda obj : obj.move_to(polar_graph.get_center_of_mass()).set_color(BLUE)
+        updot = lambda obj : obj.move_to(polar_graph.get_center_of_mass()).set_color(YELLOW)
         dot_CoM.add_updater(updot)
         
         #################### Progress Bar #########################
@@ -337,6 +373,7 @@ class ContinuousFourier(Scene):
 
         # Dot/vector on the graph and its updater
         # polar vector
+        vec_e_intitial = polar_axis.get_vector([1,0])
         vec_e = polar_axis.get_vector([1,0])
         upvector_e = lambda obj : obj.become(
                     polar_axis.get_vector([np.cos(2 * 3.14 * 0.4 * tracker.get_value()),
@@ -358,24 +395,47 @@ class ContinuousFourier(Scene):
         updot_cartesian = lambda m : m.move_to(c_axis.i2gp(graph=c_graph,x=tracker.get_value()))
         dot_cartesian.add_updater(updot_cartesian)
         
-        
         # tex
-        label_e = MathTex(r'e^{-2\pi 0.4 t i}').next_to(dot_polar, DOWN)
-        label_e.add_updater(lambda m: m.next_to(vec_e, DOWN))
+        label_e = MathTex('e^{}'.format('{-2\pi 0.4 \dot '+str(round(tracker.get_value(),2))+' i}')).next_to(vec_e, DOWN)
+        label_e.add_updater(lambda m: m.become(MathTex('e^{}'.format('{-2\pi 0.4 '+str(tracker.get_value())+' i}'))).next_to(vec_e, DOWN))
 
         #number t and its updater
         t = DecimalNumber(tracker.get_value()).next_to(label,RIGHT)
-        t.add_updater(lambda obj : obj.become(DecimalNumber(tracker.get_value())).next_to(label,RIGHT))
+        #t.set_value(t.get_value()+dt)?????????
+        t.add_updater(lambda obj : obj.become(DecimalNumber(round(tracker.get_value(),2))).next_to(label,RIGHT))
         ######################### Progress Bar ##################################
 
-        #######freqDomain
+        ####### frequency domain #######lo
+        axis_freq = Axes(x_range=[0, 15, 1], y_range=[-0.1, 0.8],
+                          x_length=7, y_length=3,
+                          axis_config={"include_numbers": True}).next_to(polar_axis, RIGHT).align_to(polar_axis, UP)
+        def get_freqDomain_sample(wind):
+            return scipy.integrate.quad(
+                lambda t: f(t)*np.exp(complex(0, -TAU*wind*t)),
+                0, second
+            )[0].real
+            
 
+        graph_freqD = axis_freq.plot(
+            get_freqDomain_sample, x_range=[0, 10, 0.1],color=YELLOW)
+        dot_freq = Dot().move_to(axis_freq.i2gp(Dk.get_value(),graph_freqD))
         
+        def up_dot(dot):
+            temp_dot = Dot(radius=0.02, color=YELLOW, fill_opacity=0.8)
+            temp_dot.move_to(axis_freq.i2gp(Dk.get_value(),graph_freqD))
+            dot.move_to(temp_dot)
+        
+        dot_freq.add_updater(up_dot)
+            
+        path = VMobject()
+        path.set_points_as_corners([dot_freq.get_center(), dot_freq.get_center()])
+        def update_path(path):
+            previous_path = path.copy()
+            previous_path.add_points_as_corners([dot_freq.get_center()])
+            path.become(previous_path)
+            path.set_color(YELLOW)
+        path.add_updater(update_path)
 
-        ###需要优化###
-            #锚点逐个显示，优化性能
-            #2022.8.30
-        ###------###
 
 
         ########################################################
@@ -389,23 +449,25 @@ class ContinuousFourier(Scene):
         self.play(formula0[1].animate.move_to(formula1))
         #self.play(ReplacementTransform(formula0,formula1))
         self.add(c_axis,axis_label,polar_axis)
+        #self.add(label_polar_axis)
         self.wait()
         
         self.play(Circumscribe(formula0[1][0:4]))
         self.wait()
         self.play(ReplacementTransform(formula0[1][0:4].copy(),c_graph))
         self.wait()
-        # shift up animation
+                          # shift up animation
         self.play(Circumscribe(formula0[1][4:11]))
         self.wait()
+        self.play(ReplacementTransform(formula0[1][4:11].copy(),vec_e_intitial))
       
         # progress bar
-        bar_group = VGroup(number_line, pointer,label,label_e,t)
+        bar_group = VGroup(number_line, pointer,label,t)
         self.add(bar_group)
-        self.add(vec_e)
-      
+        self.play(FadeOut(vec_e_intitial))
+        self.add(vec_e,label_e)
         tracker += 1
-        self.wait(1)
+        self.wait()
         tracker -= 0.5
         self.wait(0.5)
         self.play(tracker.animate.set_value(1))
@@ -413,19 +475,20 @@ class ContinuousFourier(Scene):
         self.play(tracker.animate.set_value(0.1))
         self.play(tracker.animate.increment_value(0.6))
         self.wait(0.5)
-               
+                    
         self.play(Circumscribe(formula0[1][6:10]))
         self.wait()
         self.play(Write(formula_group2))
           # show arc 2pi0.4 animation
-        text2 = MathTex(r'2\pi\times0.4').next_to(formula_group2,DOWN)
-        self.play(Write(text2))
+        #text2 = MathTex(r'2\pi\times0.4').next_to(formula_group2,DOWN)
+        #text2.add_updater(lambda obj : obj.become(MathTex(r'2\pi\times0.4').next_to(formula_group2,DOWN)))
+        
+        #self.play(Write(text2))
         self.wait() 
 
-        vec_e.remove_updater(upvector_e)
+        self.play(FadeOut(vec_e,label_e))  
         self.add(polar_graph.set_color(PURPLE))
-        #vec_e.add_updater(upvector_polar_f) 
-        self.play(FadeOut(vec_e))     
+           
         self.add(dot_cartesian,dot_polar)
 
         self.play(tracker.animate.set_value(0))
@@ -450,22 +513,44 @@ class ContinuousFourier(Scene):
         self.wait() 
         self.play(ReplacementTransform(polar_graph.copy(),dot_CoM))        
         self.wait() 
+        self.play(FadeIn(IndicateCoM))
         formula_group1.next_to(formula_group2,RIGHT)
         self.play(FadeOut(formula_group2))
         self.add(formula_group1)
         self.wait()
 
         # changing the CoM with k & draw freq_domain
-        self.play(ChangeDecimalToValue(Da,0),ChangeDecimalToValue(Dk,0)) #turn back to 0
+        self.play(ChangeDecimalToValue(Da,0.7*TAU),ChangeDecimalToValue(Dk,0.7)) #turn back to 0
+        self.wait()
+        self.play(ChangeDecimalToValue(Da,0.3*TAU),ChangeDecimalToValue(Dk,0.3)) #turn back to 0
 
+        self.play(FadeOut(formula_group1))
+        self.play(FadeOut(IndicateCoM))
+        self.add(axis_freq,dot_freq,path)
+
+        self.play(ChangeDecimalToValue(Da,0),ChangeDecimalToValue(Dk,0)) #turn back to 0
         self.wait()
-        self.play(ChangeDecimalToValue(Da,32),ChangeDecimalToValue(Dk,5.09),rate_func=rate_functions.linear,run_time=20)
+        self.play(ChangeDecimalToValue(Da,5*TAU),ChangeDecimalToValue(Dk,5),rate_func=rate_functions.linear,run_time=20)
         self.wait()
+        self.play(ChangeDecimalToValue(Da,10*TAU),ChangeDecimalToValue(Dk,10),rate_func=rate_functions.linear,run_time=15)
+
         # explanation on why there is peaks at frequency 5
             # Audio text: The reason behind might be that at this winding frequency, every period of f are just wound in one full circle, so we can gather all the peaks of f(t) on the right of the graph. Therefore by tracing the positon of CoM, we get feedback on whether the current k is similar to the true frequency of f. We are able to reveal the unknown frequencies of f(t) by looking at the position of CoM, with this mathematical wounding machine.
 
         # change f and see the polar
             #self.play(ReplacementTransform(polar_graph,polar_graph_new))
+
+        self.add(axis_freq,dot_freq,path)
+
+class PolarPlaneExample(Scene):
+    def construct(self):
+        polarplane_pi = PolarPlane(
+            azimuth_units="PI radians",
+            size=6,
+            azimuth_label_font_size=33.6,
+            radius_config={"font_size": 33.6},
+        ).add_coordinates()
+        self.add(polarplane_pi)
 
 class WindingAndFreqdomain(Scene):
     def construct(self):
@@ -552,7 +637,18 @@ class WindingAndFreqdomain(Scene):
         def get_mess_point():
             return Dot(graph_polar.get_center_of_mass())
 
-        axis_polar = PolarPlane(radius_max=1.9,size=4.5).to_edge(DL)
+        #axis_polar = PolarPlane(radius_max=1.9,size=4.5).to_edge(DL)
+        axis_polar = PolarPlane(radius_max=1.9,size=3.5,azimuth_step = 10,
+            fill_opacity=0.5,
+            azimuth_direction='CW',
+            azimuth_label_font_size=36,
+            azimuth_units="PI radians",
+            background_line_style = {
+            "stroke_color": ORANGE,
+            "stroke_width": 2,
+            "stroke_opacity": 0.5,
+        }).add_coordinates().to_edge(DL)
+
         graph_polar = VMobject().become(get_pc(set_data['f_set'][self.__channel__],set_data['color_set'][self.__channel__]))
         dot_mess = VMobject().become(get_mess_point())
         def up_polar_graph(obj): return obj.become(get_pc(set_data['f_set'][self.__channel__],set_data['color_set'][self.__channel__]))
@@ -631,8 +727,6 @@ class WindingAndFreqdomain(Scene):
         play_change_channel(4, before_wait=1, then_wait=1)
 
         self.play(ChangeDecimalToValue(Da, 8, run_time=5))
-
-
 
 
 class DFT_preparation(Scene):
