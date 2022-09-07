@@ -293,43 +293,47 @@ class ContinuousFourier(Scene):
         text1 = Tex('Fourier Transform')
 
         # Cartesian coordinates
-        #c_axis = Axes(
+        #axis_c = Axes(
         #    x_range=[0 , second + 0.1 , 1],y_range=[0, 1.1, 1],
         #    x_length=(7+1/9)*2*1.8,y_length=4*3/4,
         #    axis_config={"include_numbers": True},
         #).scale(0.5).to_edge(UP)
-        c_axis = Axes(
+        axis_c = Axes(
             x_range=[0 , second + 0.1 , 1],y_range=[0, 1.5, 1],
             y_length=2,axis_config={"include_numbers": True},tips=False,
             ).to_edge(UP)
-        axis_label = c_axis.get_axis_labels(x_label='time',y_label='intensity')
-        c_graph = c_axis.plot(f,x_range=[0,second,0.01],color=TEAL_E)
-       
+        axis_label = axis_c.get_axis_labels(x_label='time',y_label='intensity')
+        graph_c = axis_c.plot(f,x_range=[0,second,0.01],color=TEAL_E)
+        
         # polar coordinates
-        polar_axis = PolarPlane(radius_max=1,size=4,azimuth_step = 10,
+        axis_polar = PolarPlane(radius_max=1,size=4,azimuth_step = 10,
             fill_opacity=0.5,
             azimuth_direction='CW',
             azimuth_label_font_size=36,
             azimuth_units="PI radians",
             background_line_style = {
-            "stroke_color": ORANGE,
-            "stroke_width": 2,
-            "stroke_opacity": 0.5,
-        }).add_coordinates()
-        polar_graph = polar_axis.plot_parametric_curve(
+                "stroke_color": ORANGE,
+                "stroke_width": 2,
+                "stroke_opacity": 0.5,
+            }).add_coordinates()
+        polar_graph = axis_polar.plot_parametric_curve(
             lambda t : [
                 +np.cos(a*t) * (f(t)),
                 -np.sin(a*t) * (f(t)),
                 0
             ],t_range=[0,second,0.01],color=TEAL_E
-        )
-        polar_group = VGroup(polar_axis,polar_graph)
+            )
+        polar_group = VGroup(axis_polar,polar_graph)
         polar_group.to_edge(DL)
         
         # CoM
-        com = polar_graph.get_center_of_mass() # -> narray
-        dot_CoM = Dot()
-        dot_CoM.move_to(com).set_color(YELLOW)
+        com  = polar_graph.get_center_of_mass() # -> narray
+        dot_CoM = Dot().move_to(com).set_color(YELLOW)\
+
+        ### messPoint horizontal line ###
+        def get_horiz_line():return axis_polar.get_horizontal_line(polar_graph.get_center_of_mass(),line_config={"dashed_ratio": 1},color= ORANGE).set_stroke(width=7)
+        line_h = get_horiz_line()
+        line_h.add_updater(lambda obj : obj.become(get_horiz_line()))
 
         pointer_CoM = Vector(DL).scale(0.5).next_to(dot_CoM,UR)
         pointer_label_CoM = Tex("Center of Mass").next_to(pointer_CoM, UP)
@@ -341,7 +345,7 @@ class ContinuousFourier(Scene):
 
 
         # upfunc
-        upfunc_polar = lambda obj : obj.become(polar_axis.plot_parametric_curve(
+        upfunc_polar = lambda obj : obj.become(axis_polar.plot_parametric_curve(
             lambda t : [
                 +np.cos(Da.get_value()*t) * (f(t)),
                 -np.sin(Da.get_value()*t) * (f(t)),
@@ -373,49 +377,48 @@ class ContinuousFourier(Scene):
 
         # Dot/vector on the graph and its updater
         # polar vector
-        vec_e_intitial = polar_axis.get_vector([1,0])
-        vec_e = polar_axis.get_vector([1,0])
+        vec_e_intitial = axis_polar.get_vector([1,0])
+        vec_e = axis_polar.get_vector([1,0])
         upvector_e = lambda obj : obj.become(
-                    polar_axis.get_vector([np.cos(2 * 3.14 * 0.4 * tracker.get_value()),
+                    axis_polar.get_vector([np.cos(2 * 3.14 * 0.4 * tracker.get_value()),
                             np.sin(-2 * 3.14 * 0.4 * tracker.get_value())])
                     )
         vec_e.add_updater(upvector_e)
         upvector_polar_f = lambda obj : obj.become(
-            polar_axis.get_vector([np.cos(TAU * 0.4 * tracker.get_value()) * (f(tracker.get_value())),
+            axis_polar.get_vector([np.cos(TAU * 0.4 * tracker.get_value()) * (f(tracker.get_value())),
                     np.sin(-TAU * 0.4 * tracker.get_value()) * (f(tracker.get_value()))])
             )
         
         # polar dot
         dot_polar = Dot()#
-        updot_polar_f = lambda m : m.move_to(polar_axis.i2gp(graph=polar_graph,x=tracker.get_value()))#
+        updot_polar_f = lambda m : m.move_to(axis_polar.i2gp(graph=polar_graph,x=tracker.get_value()))#
         dot_polar.add_updater(updot_polar_f)#
 
         # cartessian dot
         dot_cartesian = Dot()
-        updot_cartesian = lambda m : m.move_to(c_axis.i2gp(graph=c_graph,x=tracker.get_value()))
+        updot_cartesian = lambda m : m.move_to(axis_c.i2gp(graph=graph_c,x=tracker.get_value()))
         dot_cartesian.add_updater(updot_cartesian)
         
         # tex
-        label_e = MathTex('e^{}'.format('{-2\pi 0.4 \dot '+str(round(tracker.get_value(),2))+' i}')).next_to(vec_e, DOWN)
-        label_e.add_updater(lambda m: m.become(MathTex('e^{}'.format('{-2\pi 0.4 '+str(tracker.get_value())+' i}'))).next_to(vec_e, DOWN))
+        label_e = MathTex('e^{}'.format('{-2\pi 0.4 \cdot '+str(round(tracker.get_value(),2))+' i}')).next_to(vec_e, DOWN)
+        label_e.add_updater(lambda m: m.become(MathTex('e^{}'.format('{-2\pi 0.4 \cdot'+str(round(tracker.get_value(),2))+' i}'))).next_to(vec_e, DOWN))
 
         #number t and its updater
         t = DecimalNumber(tracker.get_value()).next_to(label,RIGHT)
-        #t.set_value(t.get_value()+dt)?????????
+        
         t.add_updater(lambda obj : obj.become(DecimalNumber(round(tracker.get_value(),2))).next_to(label,RIGHT))
         ######################### Progress Bar ##################################
 
         ####### frequency domain #######lo
         axis_freq = Axes(x_range=[0, 15, 1], y_range=[-0.1, 0.8],
-                          x_length=7, y_length=3,
-                          axis_config={"include_numbers": True}).next_to(polar_axis, RIGHT).align_to(polar_axis, UP)
+                          x_length=8, y_length=3,
+                          axis_config={"include_numbers": True}).next_to(axis_polar, RIGHT).align_to(axis_polar, DOWN)
         def get_freqDomain_sample(wind):
             return scipy.integrate.quad(
                 lambda t: f(t)*np.exp(complex(0, -TAU*wind*t)),
                 0, second
             )[0].real
             
-
         graph_freqD = axis_freq.plot(
             get_freqDomain_sample, x_range=[0, 10, 0.1],color=YELLOW)
         dot_freq = Dot().move_to(axis_freq.i2gp(Dk.get_value(),graph_freqD))
@@ -426,7 +429,11 @@ class ContinuousFourier(Scene):
             dot.move_to(temp_dot)
         
         dot_freq.add_updater(up_dot)
-            
+        
+        def get_vertic_line():return axis_freq.get_vertical_line(axis_freq.i2gp(Dk.get_value(),graph_freqD),line_config={"dashed_ratio": 1},color= ORANGE).set_stroke(width=7)
+        line_v = get_vertic_line()
+        line_v.add_updater(lambda obj : obj.become(get_vertic_line()))
+
         path = VMobject()
         path.set_points_as_corners([dot_freq.get_center(), dot_freq.get_center()])
         def update_path(path):
@@ -448,13 +455,13 @@ class ContinuousFourier(Scene):
         self.play(FadeOut(formula0[0],formula0[2]))
         self.play(formula0[1].animate.move_to(formula1))
         #self.play(ReplacementTransform(formula0,formula1))
-        self.add(c_axis,axis_label,polar_axis)
-        #self.add(label_polar_axis)
+        self.add(axis_c,axis_label,axis_polar)
+        #self.add(label_axis_polar)
         self.wait()
         
         self.play(Circumscribe(formula0[1][0:4]))
         self.wait()
-        self.play(ReplacementTransform(formula0[1][0:4].copy(),c_graph))
+        self.play(ReplacementTransform(formula0[1][0:4].copy(),graph_c))
         self.wait()
                           # shift up animation
         self.play(Circumscribe(formula0[1][4:11]))
@@ -500,7 +507,7 @@ class ContinuousFourier(Scene):
         self.wait(0.5)      
 
         # winding animation
-        self.play(ReplacementTransform(c_graph.copy(),polar_graph),
+        self.play(ReplacementTransform(graph_c.copy(),polar_graph),
             run_time=3.5,
             path_arc = -TAU*2/3)
         self.wait()
@@ -526,7 +533,7 @@ class ContinuousFourier(Scene):
 
         self.play(FadeOut(formula_group1))
         self.play(FadeOut(IndicateCoM))
-        self.add(axis_freq,dot_freq,path)
+        self.add(axis_freq,dot_freq,line_v,line_h,path)
 
         self.play(ChangeDecimalToValue(Da,0),ChangeDecimalToValue(Dk,0)) #turn back to 0
         self.wait()
@@ -540,7 +547,6 @@ class ContinuousFourier(Scene):
         # change f and see the polar
             #self.play(ReplacementTransform(polar_graph,polar_graph_new))
 
-        self.add(axis_freq,dot_freq,path)
 
 class PolarPlaneExample(Scene):
     def construct(self):
@@ -926,25 +932,25 @@ class DFT_RealData(Scene):
         print("number of sample:"+str(len(sample))+"\ncurrent interval:"+str(shift)+","+str(shift+windows_dot_num))
 
         #### manim_graph ####
-        polar_axis = Axes(x_range=(-_big_,_big_),
+        axis_polar = Axes(x_range=(-_big_,_big_),
                 y_range=(-_big_,_big_),
                 x_length=8,y_length=8,
                 axis_config={"include_numbers": True})
-        graph_total = VGroup(polar_axis)
+        graph_total = VGroup(axis_polar)
 
-        polar_data = self.Create_DotSet_Polar(polar_axis, sample_part,graph_total)
+        polar_data = self.Create_DotSet_Polar(axis_polar, sample_part,graph_total)
         ###
         ########################################################
         #                  Start Animation                     #
         ########################################################
         
-        self.add(polar_axis,*polar_data)
+        self.add(axis_polar,*polar_data)
         
         旋转圈数 = 3
         播放倍数 = 1
         _精细度_ = config.frame_rate*旋转圈数/播放倍数
         for x in range(int(_精细度_)+1):
-            new_dots=self.Create_DotSet_Polar(polar_axis, sample_part,graph_total,(x)/(_精细度_)*TAU*旋转圈数)#即绕一个圈中间有多少帧
+            new_dots=self.Create_DotSet_Polar(axis_polar, sample_part,graph_total,(x)/(_精细度_)*TAU*旋转圈数)#即绕一个圈中间有多少帧
             count=-1;ani_set=[]
             for obj in polar_data:
                 count=count+1
