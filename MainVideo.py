@@ -293,11 +293,6 @@ class ContinuousFourier(Scene):
         text1 = Tex('Fourier Transform')
 
         # Cartesian coordinates
-        #axis_c = Axes(
-        #    x_range=[0 , second + 0.1 , 1],y_range=[0, 1.1, 1],
-        #    x_length=(7+1/9)*2*1.8,y_length=4*3/4,
-        #    axis_config={"include_numbers": True},
-        #).scale(0.5).to_edge(UP)
         axis_c = Axes(
             x_range=[0 , second + 0.1 , 1],y_range=[0, 1.5, 1],
             y_length=2,axis_config={"include_numbers": True},tips=False,
@@ -362,18 +357,26 @@ class ContinuousFourier(Scene):
         #################### Progress Bar #########################
         number_line = NumberLine(x_range=[0,1,0.5],length=2,include_numbers=True).next_to(formula1,DOWN).shift(DOWN*2)
         tracker = ValueTracker(0)
-        pointer = Vector(DOWN).scale(0.5).next_to(
-                        number_line.n2p(tracker.get_value()),
-                        UP
+        
+        pointer = Vector(UP).scale(0.5).next_to(
+                        axis_c.c2p(tracker.get_value(),0),
+                        DOWN
                     )
-        label = MathTex("t=").next_to(pointer, UP)
-        label.add_updater(lambda m: m.next_to(pointer, UP))       
+        label = MathTex("t=").next_to(pointer, DOWN)
+        #number t and its updater
+        t = DecimalNumber(tracker.get_value()).next_to(label,RIGHT)
+        label.add_updater(lambda m: m.next_to(pointer, DOWN))       
         pointer.add_updater(
             lambda m: m.next_to(
-                        number_line.n2p(tracker.get_value()),
-                        UP
+                        axis_c.c2p(tracker.get_value(),0),
+                        DOWN
                     )
         )
+
+        def get_labelBox():return SurroundingRectangle(VGroup(label,t), corner_radius=0,color=PINK,fill_opacity=0.5)
+        box_label = get_labelBox()
+        box_label.add_updater(lambda obj : obj.become(get_labelBox()))
+
 
         # Dot/vector on the graph and its updater
         # polar vector
@@ -403,8 +406,7 @@ class ContinuousFourier(Scene):
         label_e = MathTex('e^{}'.format('{-2\pi 0.4 \cdot '+str(round(tracker.get_value(),2))+' i}')).next_to(vec_e, DOWN)
         label_e.add_updater(lambda m: m.become(MathTex('e^{}'.format('{-2\pi 0.4 \cdot'+str(round(tracker.get_value(),2))+' i}'))).next_to(vec_e, DOWN))
 
-        #number t and its updater
-        t = DecimalNumber(tracker.get_value()).next_to(label,RIGHT)
+
         
         t.add_updater(lambda obj : obj.become(DecimalNumber(round(tracker.get_value(),2))).next_to(label,RIGHT))
         ######################### Progress Bar ##################################
@@ -469,7 +471,7 @@ class ContinuousFourier(Scene):
         self.play(ReplacementTransform(formula0[1][4:11].copy(),vec_e_intitial))
       
         # progress bar
-        bar_group = VGroup(number_line, pointer,label,t)
+        bar_group = VGroup(number_line, pointer,label,box_label,t)
         self.add(bar_group)
         self.play(FadeOut(vec_e_intitial))
         self.add(vec_e,label_e)
@@ -569,7 +571,7 @@ class WindingAndFreqdomain(Scene):
                 Transform(graph_polar,get_pc(set_data['f_set'][change_to],_color=set_data['color_set'][change_to])),#改极坐标
                 Transform(graph_label,set_data['graph_label_set'][self.__channel__]),#改直角坐标图像标签
                 Transform(graph_c,set_data['graph_c_set'][self.__channel__]),#改直角坐标图像
-                Transform(graph_freqD,axis_freqD.plot(get_freqDomain_sample,x_range=[0,15,0.1])),#改freqD图像
+                Transform(graph_freqD,axis_freqD.plot(get_freqDomain_sample,x_range=[0,15,0.1],color=YELLOW)),#改freqD图像
                 dot_freqDomain.animate.move_to(get_dot_freqDomain(Da.get_value())),#质心点在freqD
                 run_time=run_time#设置动画时间
                 )
@@ -598,11 +600,11 @@ class WindingAndFreqdomain(Scene):
 #
         ],
         'color_set':[
-            YELLOW_A,
-            YELLOW_B,
-            YELLOW_C,
-            PINK,
-            RED_A,
+            TEAL_A,
+            TEAL_B,
+            TEAL_C,
+            TEAL_D,
+            TEAL_E,
             RED_D,
         ],
         #It will be normalized the style automatically,like match the color,scale and Mobject position.
