@@ -1,4 +1,7 @@
 # manim_video_FFT
+![](video_script/2022-08-04-19-41-00.png)
+![](video_script/2022-08-04-17-07-40.png)
+![](video_script/2022-08-04-15-14-11.png)
 # Introduction
 Sounds have frequencies.
 Here are two notes playing together, 
