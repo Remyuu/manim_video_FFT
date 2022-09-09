@@ -1,4 +1,6 @@
 # manim_video_FFT
+![](/media/videos/MainVideo/480p15/WindingAndFreqdomain_ManimCE_v0.16.0.post0.gif)
+![](video_script/2022-08-04-19-41-00.png)
 ![](video_script/2022-08-04-19-41-00.png)
 ![](video_script/2022-08-04-17-07-40.png)
 ![](video_script/2022-08-04-15-14-11.png)
