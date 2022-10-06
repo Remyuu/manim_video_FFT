@@ -19,17 +19,11 @@
         1、解决连续傅立叶中点动线动的问题 下午@咖啡厅
 
 '''
-#拖鞋 挂钩 转换插头
-#药
-#眼镜 保暖内衣 wilko -枕头被子不买
-#数据线 密码器 
-#筷子 吹风机（200的连负离子都没有
 
 from manim import *
-import librosa
 import numpy as np
 import scipy
-import colour
+
 import pickle #写出读取打包 序列化二进制list
 
 
@@ -263,22 +257,15 @@ class ContinuousFourier(Scene):
 
         # function f
         f = lambda x: y_scale*(np.cos(5*2*PI*x)+1)
+        Df = lambda x: y_scale*(np.cos(1/Dk.get_value()*5*2*PI*x)+1)
 
         # formulas & text
         formula0 = formula_set.formula_01[0]
-        formula1 = formula_set.formula_01[1].next_to(ORIGIN,RIGHT)
-        formula2 = formula_set.formula_01[2].to_edge(RIGHT)
-        #formula3 = MathTex(r'2\pi \times').next_to(formula2,DOWN)
-        #formula4 = MathTex(r'=')
+        formula1 = formula_set.formula_01[1].next_to(ORIGIN,RIGHT).shift(DOWN)
+        formula2 = formula_set.formula_01[2].next_to(ORIGIN,RIGHT).shift(DOWN)
         formula5 = MathTex(r'k=0.4')
         text3 = MathTex(r'radius')
-        #
-        #line = Square()       
-        ##Let the line rotate 90° per second        
-        #line.add_updater(lambda mobject, dt: mobject.rotate(dt*90*DEGREES))        
-        #self.add(line)       
-        #self.wait(2)
-
+        
 
         def get_f3():
             return MathTex(r"2\pi \times",' {0} = {1}'.format(
@@ -300,6 +287,7 @@ class ContinuousFourier(Scene):
         axis_label = axis_c.get_axis_labels(x_label='time',y_label='intensity')
         graph_c = axis_c.plot(f,x_range=[0,second,0.01],color=TEAL_E)
         
+
         # polar coordinates
         axis_polar = PolarPlane(radius_max=1,size=4,azimuth_step = 10,
             fill_opacity=0.5,
@@ -350,6 +338,9 @@ class ContinuousFourier(Scene):
             color=TEAL_E
         ))
         polar_graph.add_updater(upfunc_polar)
+
+        upfunc_c = lambda obj : obj.become(axis_c.plot(Df,x_range=[0,second,0.01],color=TEAL_E))
+        graph_c.add_updater(upfunc_c)
         # dot
         updot = lambda obj : obj.move_to(polar_graph.get_center_of_mass()).set_color(YELLOW)
         dot_CoM.add_updater(updot)
@@ -373,7 +364,7 @@ class ContinuousFourier(Scene):
                     )
         )
 
-        def get_labelBox():return SurroundingRectangle(VGroup(label,t), corner_radius=0,color=PINK,fill_opacity=0.5)
+        def get_labelBox():return SurroundingRectangle(VGroup(label,t), corner_radius=0)
         box_label = get_labelBox()
         box_label.add_updater(lambda obj : obj.become(get_labelBox()))
 
@@ -392,6 +383,17 @@ class ContinuousFourier(Scene):
                     np.sin(-TAU * 0.4 * tracker.get_value()) * (f(tracker.get_value()))])
             )
         
+        def get_arc():return ArcBetweenPoints( 
+                       end= axis_polar.coords_to_point(0.3,0),
+                       start= axis_polar.coords_to_point(0.3*np.cos(Da.get_value()),-0.3*np.sin(Da.get_value())),
+                       stroke_color=YELLOW)
+        arc= get_arc()
+        arc.add_updater(lambda ob : ob.become(get_arc()))
+        
+        label_arc = MathTex()
+
+
+
         # polar dot
         dot_polar = Dot()#
         updot_polar_f = lambda m : m.move_to(axis_polar.i2gp(graph=polar_graph,x=tracker.get_value()))#
@@ -471,7 +473,8 @@ class ContinuousFourier(Scene):
         self.play(ReplacementTransform(formula0[1][4:11].copy(),vec_e_intitial))
       
         # progress bar
-        bar_group = VGroup(number_line, pointer,label,box_label,t)
+
+        bar_group = VGroup(pointer,label,box_label,t)
         self.add(bar_group)
         self.play(FadeOut(vec_e_intitial))
         self.add(vec_e,label_e)
@@ -487,7 +490,9 @@ class ContinuousFourier(Scene):
                     
         self.play(Circumscribe(formula0[1][6:10]))
         self.wait()
-        self.play(Write(formula_group2))
+        #self.play(Write(formula_group2))
+
+
           # show arc 2pi0.4 animation
         #text2 = MathTex(r'2\pi\times0.4').next_to(formula_group2,DOWN)
         #text2.add_updater(lambda obj : obj.become(MathTex(r'2\pi\times0.4').next_to(formula_group2,DOWN)))
@@ -496,10 +501,11 @@ class ContinuousFourier(Scene):
         self.wait() 
 
         self.play(FadeOut(vec_e,label_e))  
+
         self.add(polar_graph.set_color(PURPLE))
            
         self.add(dot_cartesian,dot_polar)
-
+        self.add(arc)
         self.play(tracker.animate.set_value(0))
         self.wait(0.5)
         self.play(tracker.animate.set_value(1),run_time=5),
@@ -507,14 +513,17 @@ class ContinuousFourier(Scene):
         self.play(tracker.animate.set_value(0.1),run_time=5)
         self.play(tracker.animate.increment_value(0.6),run_time=5)
         self.wait(0.5)      
+        self.play(FadeOut(bar_group))
+        self.play(FadeOut(dot_cartesian))
+        self.wait()
+
 
         # winding animation
         self.play(ReplacementTransform(graph_c.copy(),polar_graph),
             run_time=3.5,
             path_arc = -TAU*2/3)
         self.wait()
-        self.play(FadeOut(bar_group))
-        self.wait()
+        
         # CoM
         self.play(ReplacementTransform(formula0[1],formula2))
         self.wait() 
@@ -523,21 +532,24 @@ class ContinuousFourier(Scene):
         self.play(ReplacementTransform(polar_graph.copy(),dot_CoM))        
         self.wait() 
         self.play(FadeIn(IndicateCoM))
-        formula_group1.next_to(formula_group2,RIGHT)
-        self.play(FadeOut(formula_group2))
-        self.add(formula_group1)
+        #formula_group1.next_to(formula_group2,RIGHT)
+        #self.play(FadeOut(formula_group2))
+        #self.add(formula_group1)
         self.wait()
 
         # changing the CoM with k & draw freq_domain
-        self.play(ChangeDecimalToValue(Da,0.7*TAU),ChangeDecimalToValue(Dk,0.7)) #turn back to 0
+        
+        self.play(ChangeDecimalToValue(Da,0.5*TAU),ChangeDecimalToValue(Dk,0.5)) #turn back to 0
         self.wait()
         self.play(ChangeDecimalToValue(Da,0.3*TAU),ChangeDecimalToValue(Dk,0.3)) #turn back to 0
 
-        self.play(FadeOut(formula_group1))
+        #self.play(FadeOut(formula_group1))
         self.play(FadeOut(IndicateCoM))
+        self.play(FadeOut(arc))
+
         self.add(axis_freq,dot_freq,line_v,line_h,path)
 
-        self.play(ChangeDecimalToValue(Da,0),ChangeDecimalToValue(Dk,0)) #turn back to 0
+        self.play(ChangeDecimalToValue(Da,0.3*TAU),ChangeDecimalToValue(Dk,0.3)) #turn back to 0
         self.wait()
         self.play(ChangeDecimalToValue(Da,5*TAU),ChangeDecimalToValue(Dk,5),rate_func=rate_functions.linear,run_time=20)
         self.wait()
@@ -549,16 +561,6 @@ class ContinuousFourier(Scene):
         # change f and see the polar
             #self.play(ReplacementTransform(polar_graph,polar_graph_new))
 
-
-class PolarPlaneExample(Scene):
-    def construct(self):
-        polarplane_pi = PolarPlane(
-            azimuth_units="PI radians",
-            size=6,
-            azimuth_label_font_size=33.6,
-            radius_config={"font_size": 33.6},
-        ).add_coordinates()
-        self.add(polarplane_pi)
 
 class WindingAndFreqdomain(Scene):
     def construct(self):
@@ -1038,4 +1040,15 @@ class uAndM(Scene):
     def construct(self):
         ss = ImageMobject('uam.jpeg').scale(0.8)
         self.play(FadeIn(ss))
+
+class showArc(Scene):
+    def construct(self):
+        pass
+        
+        dot_1 = Dot(color=GREEN).move_to([2, 0, 0]).scale(0.5)
+        dot_1_text = Tex("(2,0)").scale(0.5).next_to(dot_1, RIGHT).set_color(BLUE)
+        dot_2 = Dot(color=GREEN).move_to([0, 2, 0]).scale(0.5)
+        dot_2_text = Tex("(0,2)").scale(0.5).next_to(dot_2, UP).set_color(BLUE)
+
+        
         

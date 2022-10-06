@@ -61,25 +61,23 @@ Here is the core formula for the **Fourier Transform**.
 ```
 Show the formula
 ```
-We first focus on the two terms inside.
+It looks a little complecated. We first focus on these two terms inside.
 ```
 Leaves only f(t)e^.., move to RIGHT.
 Meanwhile, show the two coordinate system.
 ```
-The f(t) is just our sound to be handled, where t is time. For a simpler explanation, we look at one note first, i.e. a single sine or cosine wave. ==↓==
+The f(t), is just the sound wave. Here, we've displayed the sound wave of a pure note, i.e. a single sine or cosine wave. 
+
+But also note that this is a shifted-up cosine wave, just a minor detail to make things simpler.
+==↓==
 ```
-circumscribe f(t)
-f(t)->wave on cartessian coordinate
-```
-But also note that we would like to shift our function up a little bit, just a minor detail to make things simpler.
-```
-f(t) shift up by 1.
+f(t) shift down and up by 1.(可以‘x轴↑0.5，图像↓0.5’的效果)
 ```
 And then for the exponential terms,
 ```
 circumscribe e^..
 ```
-all we have to know is that it is a mathematical abbreviation of spinning vector w.r.t time.
+it can be seen as a spinning vector w.r.t time.[more to that on this 3b1b video]
 ```
 Show the progress bar (t from 0 to 1)
 Show a unit vector on the polar plane, with the tip [e^..t].
@@ -103,10 +101,12 @@ Now coming back to our Fourier formula.
 ```
 Add the integral sign on f(t)e^.. to complete the formula.
 ```
-This simply meams finding some *Center of Mass* of the wound-up graph.
+Taking the integral over the two terms meams finding some *Center of Mass* of the wound-up graph. 
 ```
 circumscribe the whole formula, meanwhile, show the CoM.
 ```
+that is we imagine the curve has some mass and we want to find the mass center.
+
 So as we change our winding frequency, i.e. for different k, we may get different CoM.
 ```
 Change k animation, slowly
