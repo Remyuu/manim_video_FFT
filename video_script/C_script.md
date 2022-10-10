@@ -72,6 +72,7 @@ But also note that this is a shifted-up cosine wave, just a minor detail to make
 ==↓==
 ```
 f(t) shift down and up by 1.(可以‘x轴↑0.5，图像↓0.5’的效果)
+
 ```
 And then for the exponential terms,
 ```
@@ -79,20 +80,20 @@ circumscribe e^..
 ```
 it can be seen as a spinning vector w.r.t time.[more to that on this 3b1b video]
 ```
-Show the progress bar (t from 0 to 1)
+e^xxx to vector
 Show a unit vector on the polar plane, with the tip [e^..t].
 Change t, vector change accordingly,t in the e^..t change
 ```
-Together with 2pi and k, it means that the vector swept 2 pi k radius within the give time. Here k is 0.4. So in 1 second, the vector swept accross 0.4 of a whole circle.
+Specificly, it is a vector that swept 2 pi k radius during 1 second. Here k is 0.4. 2 pi is the radius for one circle. So in 1 second, the vector swept 0.4 of a whole circle.
 ```
 Show 2pi*0.4 with arc arround the polar plane.
 ```
-Finally, multiplying f(t) with this just mean stretching and compressing this spining vector according to the magnitude of f at that time t.
+Finally, we multiply f(t) with this vector. It just mean we stretch and compress this spinning vector according to the magnitude of f, at that time t.
 ```
 Add the new trace.
 Change t again, the vector show new trace.
 ```
-Or it can also be interpreted as if we wound up the f(t) around on the plane as the trace of the vector, with the wounding frequency k = 0.4 of the whole circle.
+Or it can also be interpreted like as if we wound up f(t) around, as the trace of the vector. More specificly, with the wounding frequency k = 0.4 of a whole circle.
 ```
 wound up animation
 ```
@@ -100,22 +101,23 @@ wound up animation
 Now coming back to our Fourier formula.
 ```
 Add the integral sign on f(t)e^.. to complete the formula.
+circumscribe the whole formula
 ```
-Taking the integral over the two terms meams finding some *Center of Mass* of the wound-up graph. 
+This formula takes the integral over the two terms we've talked about. It can be interpreted as finding some *Center of Mass* of the wound-up graph. 
 ```
-circumscribe the whole formula, meanwhile, show the CoM.
+show the CoM.
 ```
-that is we imagine the curve has some mass and we want to find the mass center.
-
-So as we change our winding frequency, i.e. for different k, we may get different CoM.
+that is, imagine the curve has some mass, and we are finding the center of this mass.
+***pause***
+So as we change our winding frequency, i.e. change for different k, we may get different CoM.
 ```
-Change k animation, slowly
+Change k animation
 ```
-We may record and draw the distance of CoM from the y axis.
+We may draw and record the distance of CoM from the y axis.
 ```
 Show, draw frequency domain graph.
 ```
-Note here that we may say the different frequency of winding, corresponds to stretching the sound f(t). This can be seen both from our eyes or from the formula.
+Note here that we may say that, the different frequency of winding, corresponds to stretching the sound f(t) accordingly. This can be seen both from our eyes or from the formula.
 ```
 stretching f(t), add to channel
 ```

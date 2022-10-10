@@ -1,3 +1,4 @@
+from telnetlib import DO
 from manim import *
 import numpy as np
 import scipy
@@ -203,9 +204,8 @@ class ContinuousFourier(Scene):
                        stroke_color=YELLOW)
         arc= get_arc()
         arc.add_updater(lambda ob : ob.become(get_arc()))
-        label_arc = MathTex(r"radius").next_to(arc,DL)
-
-
+        label_arc = MathTex('{} radius'.format(Dk.get_value())).next_to(arc,DOWN)
+        label_arc.add_updater(lambda ob : ob.become(label_arc))
 
         # polar dot
         dot_polar = Dot()#
@@ -282,6 +282,12 @@ class ContinuousFourier(Scene):
         self.wait()
         self.play(ReplacementTransform(formula0[1][0:4].copy(),graph_c))
         self.wait()
+
+        self.play(axis_c.get_x_axis().animate.shift(0.5*UP),graph_c.animate.shift(0.5*DOWN))
+        self.wait()
+        
+        self.play(axis_c.get_x_axis().animate.shift(0.5*DOWN),graph_c.animate.shift(0.5*UP))
+        self.wait()
                           # shift up animation
         self.play(Circumscribe(formula0[1][4:11]))
         self.wait()
@@ -344,30 +350,33 @@ class ContinuousFourier(Scene):
         self.play(ReplacementTransform(polar_graph.copy(),dot_CoM))        
         self.wait() 
         self.play(FadeIn(IndicateCoM))
-        #formula_group1.next_to(formula_group2,RIGHT)
-        #self.play(FadeOut(formula_group2))
-        #self.add(formula_group1)
         self.wait()
-        graph_c.add_updater(upfunc_c)
-        self.wait()
+        
 
         # changing the CoM with k & draw freq_domain
-        
         self.play(ChangeDecimalToValue(Da,0.7*TAU),ChangeDecimalToValue(Dk,0.7)) #turn back to 0
         self.wait()
         self.play(ChangeDecimalToValue(Da,0.3*TAU),ChangeDecimalToValue(Dk,0.3)) #turn back to 0
 
-        #self.play(FadeOut(formula_group1))
         self.play(FadeOut(IndicateCoM))
         self.play(FadeOut(arc,label_arc))
 
-        self.add(axis_freq,dot_freq,line_v,line_h,path)
+        
+        self.wait()
+
+        self.play(FadeIn(line_h))
+        self.wait()
+        self.play(ApplyWave(line_h))
+        self.wait()
+        self.play(FadeIn(axis_freq,dot_freq,path))
+        self.play(FadeIn(line_v))
 
         self.play(ChangeDecimalToValue(Da,0.3*TAU),ChangeDecimalToValue(Dk,0.3)) #turn back to 0
-        self.wait()
+        self.play(ChangeDecimalToValue(Da,1.1*TAU),ChangeDecimalToValue(Dk,1.1),rate_func=rate_functions.linear,run_time=6) #turn back to 0
+        graph_c.add_updater(upfunc_c)
         self.play(ChangeDecimalToValue(Da,5*TAU),ChangeDecimalToValue(Dk,5),rate_func=rate_functions.linear,run_time=20)
         self.wait()
-        self.play(ChangeDecimalToValue(Da,10*TAU),ChangeDecimalToValue(Dk,10),rate_func=rate_functions.linear,run_time=15)
+        self.play(ChangeDecimalToValue(Da,10*TAU),ChangeDecimalToValue(Dk,10),rate_func=rate_functions.linear,run_time=7)
 
         # explanation on why there is peaks at frequency 5
             # Audio text: The reason behind might be that at this winding frequency, every period of f are just wound in one full circle, so we can gather all the peaks of f(t) on the right of the graph. Therefore by tracing the positon of CoM, we get feedback on whether the current k is similar to the true frequency of f. We are able to reveal the unknown frequencies of f(t) by looking at the position of CoM, with this mathematical wounding machine.
